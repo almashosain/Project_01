@@ -1,7 +1,7 @@
 // Promise -> Pending, Resolve(success), Reject(error)
 
 const categoryContainer = document.getElementById('categoryContainer')
-
+const newsContainer = document.getElementById('newsContainer')
 const loadCategory = () => {
     fetch('https://news-api-fs.vercel.app/api/categories')   // Promise 
 .then((res) => res.json())  // res -- promise
@@ -32,16 +32,42 @@ const showCategory = (categories) => {
      })   
 
 if(e.target.localName === 'li'){
-    console.log(e.target)
+    // console.log(e.target.id)
     e.target.classList.add('border-b-4')
+    loadNewsByCategory(e.target.id)
 }
 })
 
 }
 
-
+const loadNewsByCategory = (categoryId) => {
+    console.log(categoryId)
+    fetch(`  https://news-api-fs.vercel.app/api/categories/${categoryId}`)
+        .then(res => res.json())
+        .then(data => {
+            showNewsByCategory(data.articles)
+        })
+    .catch(err => {
+        console.log(err)
+    })
+}
+const showNewsByCategory = (articles) => {
+   console.log(articles)
+   newsContainer.innerHTML = ""
+    articles.forEach(article => {
+        newsContainer.innerHTML +=`
+        <div>
+        <div>
+        <img src="${article.image.srcset[5].url}"/>
+        </div>
+        <h1>${article.title}</h1>
+        <p>${article.time}
+        </div>
+        `
+    })
+}
 loadCategory()
-
+loadNewsByCategory('main')
 
 
 
